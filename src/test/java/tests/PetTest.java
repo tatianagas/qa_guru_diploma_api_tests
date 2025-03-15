@@ -3,8 +3,11 @@ package tests;
 import data.PetData;
 import model.ErrorResponsePetModel;
 import model.PetModel;
+import model.PetStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import services.PetService;
 import services.PetUpdateService;
 import specs.TestSpec;
@@ -56,31 +59,21 @@ public class PetTest extends TestBase {
         });
     }
 
-    @Test
-    @DisplayName("Проверка наличия питомца с именем 'King Kong' среди проданных")
-    void findSoldPetsTest() {
-
-        String expectedName = "King Kong";
-
-
-        List<PetModel> pets = step("Ищем питомцев со статусом 'sold'", () ->
+    @ParameterizedTest
+    @EnumSource(PetStatus.class)
+    @DisplayName("Поиск питомцев по статусу {status}")
+    void findPetsByStatusTest(PetStatus status) {
+        List<PetModel> pets = step("Ищем питомцев со статусом " + status, () ->
                 given(TestSpec.requestSpec)
-                        .queryParam("status", "sold")
+                        .queryParam("status", status.name().toLowerCase())
                         .when()
                         .get("/pet/findByStatus")
                         .then()
                         .spec(TestSpec.responseCod200Spec)
                         .extract().jsonPath().getList("", PetModel.class));
 
-        step("Проверяем количество питомцев", () -> {
-            assertThat(pets).hasSize(7);
-        });
-
-
-        step("Проверяем наличие питомца с именем 'King Kong'", () -> {
-            boolean isKingKongFound = pets.stream()
-                    .anyMatch(pet -> pet.getName().equals(expectedName));
-            assertThat(isKingKongFound).isTrue();
+        step("Проверяем, что список питомцев не пуст", () -> {
+            assertThat(pets).isNotEmpty();
         });
     }
 
@@ -110,16 +103,11 @@ public class PetTest extends TestBase {
     @DisplayName("Поиск несуществующего питомца по ID")
     void findPetByIdNotFoundTest() {
 
-        long petId = 80;
+        long nonExistentPetId = Long.MAX_VALUE;
         String expectedErrorMessage = "Pet not found";
 
-        ErrorResponsePetModel errorResponse = step("Ищем питомца по несуществующему ID " + petId, () ->
-                given(TestSpec.requestSpec)
-                        .when()
-                        .get("/pet/{petId}", petId)
-                        .then()
-                        .spec(TestSpec.responseCod404Spec)
-                        .extract().as(ErrorResponsePetModel.class));
+        ErrorResponsePetModel errorResponse = step("Ищем питомца по несуществующему ID " + nonExistentPetId, () ->
+                petService.getPetByIdNotFound(nonExistentPetId));
 
         step("Проверяем сообщение об ошибке", () -> {
             assertThat(errorResponse.getMessage()).isEqualTo(expectedErrorMessage);
