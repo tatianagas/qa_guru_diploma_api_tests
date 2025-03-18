@@ -8,159 +8,94 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import services.PetService;
-import services.PetUpdateService;
-import specs.TestSpec;
+import steps.*;
+import utils.PetGenerator;
 
 import java.util.List;
 
-import static io.qameta.allure.Allure.step;
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class PetTest extends TestBase {
 
-    private final PetService petService = new PetService();
-    private final PetUpdateService petUpdateService = new PetUpdateService();
+    private final PetCreationSteps petCreationSteps = new PetCreationSteps();
+    private final PetSearchSteps petSearchSteps = new PetSearchSteps();
+    private final PetUpdateSteps petUpdateSteps = new PetUpdateSteps();
+    private final PetVerificationSteps petVerificationSteps = new PetVerificationSteps();
+    private final PetDeletionSteps petDeletionSteps = new PetDeletionSteps();
 
     @Test
     @DisplayName("Создание нового питомца")
     void createPetTest() {
+        PetModel pet = PetData.getDefaultPet();
 
-        PetModel.Category category = PetData.getCategory();
-        List<String> photoUrls = PetData.getPhotoUrls();
-        List<PetModel.Tag> tags = PetData.getTags();
-
-        PetModel pet = new PetModel(
+        PetModel createdPet = petCreationSteps.createPet(pet);
+        petVerificationSteps.verifyCreatedPet(
+                createdPet,
                 PetData.PET_ID,
-                category,
                 PetData.PET_NAME,
-                photoUrls,
-                tags,
-                PetData.PET_STATUS
+                PetData.PET_STATUS,
+                PetData.CATEGORY_NAME,
+                PetData.TAG_NAME,
+                PetData.PHOTO_URL
         );
-
-        PetModel createdPet = step("Создаем нового питомца", () ->
-                given(TestSpec.requestSpec)
-                        .body(pet)
-                        .when()
-                        .post("/pet")
-                        .then()
-                        .spec(TestSpec.responseCod200Spec)
-                        .extract().as(PetModel.class));
-
-        step("Проверяем свойства созданного питомца", () -> {
-            assertThat(createdPet.getId()).isEqualTo(PetData.PET_ID);
-            assertThat(createdPet.getName()).isEqualTo(PetData.PET_NAME);
-            assertThat(createdPet.getStatus()).isEqualTo(PetData.PET_STATUS);
-            assertThat(createdPet.getCategory().getName()).isEqualTo(PetData.CATEGORY_NAME);
-            assertThat(createdPet.getTags().get(0).getName()).isEqualTo(PetData.TAG_NAME);
-            assertThat(createdPet.getPhotoUrls()).containsExactly(PetData.PHOTO_URL);
-        });
     }
 
     @ParameterizedTest
     @EnumSource(PetStatus.class)
     @DisplayName("Поиск питомцев по статусу {status}")
     void findPetsByStatusTest(PetStatus status) {
-        List<PetModel> pets = step("Ищем питомцев со статусом " + status, () ->
-                given(TestSpec.requestSpec)
-                        .queryParam("status", status.name().toLowerCase())
-                        .when()
-                        .get("/pet/findByStatus")
-                        .then()
-                        .spec(TestSpec.responseCod200Spec)
-                        .extract().jsonPath().getList("", PetModel.class));
-
-        step("Проверяем, что список питомцев не пуст", () -> {
-            assertThat(pets).isNotEmpty();
-        });
+        List<PetModel> pets = petSearchSteps.findPetsByStatus(status);
+        petVerificationSteps.verifyPetsListIsNotEmpty(pets);
     }
 
     @Test
     @DisplayName("Успешный поиск питомца по ID")
     void findPetByIdSuccessTest() {
-
-        List<PetModel> pets = petService.getAllPets();
-
-        step("Проверяем, что список питомцев не пустой", () -> {
-            assertThat(pets).isNotEmpty();
-        });
+        List<PetModel> pets = petSearchSteps.getAllPets();
+        petVerificationSteps.verifyPetsListIsNotEmpty(pets);
 
         PetModel expectedPet = pets.get(0);
         long petId = expectedPet.getId();
 
-        PetModel pet = step("Ищем питомца по ID " + petId, () ->
-                petService.getPetById(petId));
-
-        step("Проверяем имя и статус питомца", () -> {
-            assertThat(pet.getName()).isEqualTo(expectedPet.getName());
-            assertThat(pet.getStatus()).isEqualTo(expectedPet.getStatus());
-        });
+        PetModel pet = petSearchSteps.getPetById(petId);
+        petVerificationSteps.verifyPetNameAndStatus(pet, expectedPet.getName(), expectedPet.getStatus());
     }
 
     @Test
     @DisplayName("Поиск несуществующего питомца по ID")
     void findPetByIdNotFoundTest() {
-
         long nonExistentPetId = Long.MAX_VALUE;
         String expectedErrorMessage = "Pet not found";
 
-        ErrorResponsePetModel errorResponse = step("Ищем питомца по несуществующему ID " + nonExistentPetId, () ->
-                petService.getPetByIdNotFound(nonExistentPetId));
-
-        step("Проверяем сообщение об ошибке", () -> {
-            assertThat(errorResponse.getMessage()).isEqualTo(expectedErrorMessage);
-        });
+        ErrorResponsePetModel errorResponse = petSearchSteps.getPetByIdNotFound(nonExistentPetId);
+        petVerificationSteps.verifyErrorMessage(errorResponse, expectedErrorMessage);
     }
 
     @Test
     @DisplayName("Обновление данных существующего питомца")
     void updatePetTest() {
-
-        List<PetModel> pets = petService.getAllPets();
-
-
-        step("Проверяем, что список питомцев не пустой", () -> {
-            assertThat(pets).isNotEmpty();
-        });
-
+        List<PetModel> pets = petSearchSteps.getAllPets();
+        petVerificationSteps.verifyPetsListIsNotEmpty(pets);
 
         PetModel petToUpdate = pets.get(0);
         long petId = petToUpdate.getId();
 
+        PetModel updatedPet = PetGenerator.createUpdatedPet(petToUpdate);
+        PetModel responsePet = petUpdateSteps.updatePet(updatedPet);
 
-        PetModel updatedPet = petUpdateService.createUpdatedPet(petToUpdate);
+        petVerificationSteps.verifyUpdatedPet(responsePet, petId, updatedPet.getName(), updatedPet.getStatus());
 
+        PetModel fetchedPet = petSearchSteps.getPetById(petId);
+        petVerificationSteps.verifyPetNameAndStatus(fetchedPet, updatedPet.getName(), updatedPet.getStatus());
+    }
 
-        PetModel responsePet = step("Обновляем данные питомца", () ->
-                given(TestSpec.requestSpec)
-                        .body(updatedPet)
-                        .when()
-                        .put("/pet")
-                        .then()
-                        .spec(TestSpec.responseCod200Spec)
-                        .extract().as(PetModel.class));
+    @Test
+    @DisplayName("Удаление питомца по ID")
+    void deletePetByIdTest() {
+        PetModel pet = PetData.getDefaultPet();
+        PetModel createdPet = petCreationSteps.createPet(pet);
 
-        step("Проверяем обновленные данные питомца", () -> {
-            assertThat(responsePet.getId()).isEqualTo(petId);
-            assertThat(responsePet.getName()).isEqualTo(updatedPet.getName());
-            assertThat(responsePet.getStatus()).isEqualTo(updatedPet.getStatus());
-        });
+        long petId = createdPet.getId();
+        petDeletionSteps.deletePetById(petId);
 
-        PetModel fetchedPet = step("Проверяем изменения через GET-запрос", () ->
-                given(TestSpec.requestSpec)
-                        .when()
-                        .get("/pet/{petId}", petId)
-                        .then()
-                        .spec(TestSpec.responseCod200Spec)
-                        .extract().as(PetModel.class));
-
-        step("Проверяем, что изменения сохранились", () -> {
-            assertThat(fetchedPet.getName()).isEqualTo(updatedPet.getName());
-            assertThat(fetchedPet.getStatus()).isEqualTo(updatedPet.getStatus());
-        });
+        petSearchSteps.getPetByIdNotFound(petId);
     }
 }
-
-

@@ -1,15 +1,16 @@
-package services;
+package steps;
 
 import io.qameta.allure.Step;
 import model.ErrorResponsePetModel;
 import model.PetModel;
+import model.PetStatus;
 import specs.TestSpec;
 
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
 
-public class PetService {
+public class PetSearchSteps {
 
     @Step("Получаем список всех питомцев")
     public List<PetModel> getAllPets() {
@@ -18,7 +19,7 @@ public class PetService {
                 .when()
                 .get("/pet/findByStatus")
                 .then()
-                .spec(TestSpec.responseCod200Spec)
+                .spec(TestSpec.getResponseSpec(200))
                 .extract().jsonPath().getList("", PetModel.class);
     }
 
@@ -28,8 +29,19 @@ public class PetService {
                 .when()
                 .get("/pet/{petId}", petId)
                 .then()
-                .spec(TestSpec.responseCod200Spec)
+                .spec(TestSpec.getResponseSpec(200))
                 .extract().as(PetModel.class);
+    }
+
+    @Step("Ищем питомцев по статусу {status}")
+    public List<PetModel> findPetsByStatus(PetStatus status) {
+        return given(TestSpec.requestSpec)
+                .queryParam("status", status.name().toLowerCase())
+                .when()
+                .get("/pet/findByStatus")
+                .then()
+                .spec(TestSpec.getResponseSpec(200))
+                .extract().jsonPath().getList("", PetModel.class);
     }
 
     @Step("Получаем ошибку для несуществующего питомца по ID {petId}")
@@ -38,7 +50,8 @@ public class PetService {
                 .when()
                 .get("/pet/{petId}", petId)
                 .then()
-                .spec(TestSpec.responseCod404Spec)
+                .spec(TestSpec.getResponseSpec(404)) // Ожидаем код ответа 404
                 .extract().as(ErrorResponsePetModel.class);
     }
 }
+

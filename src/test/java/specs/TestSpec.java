@@ -16,13 +16,10 @@ public class TestSpec {
             .log().all()
             .contentType(JSON);
 
-    public static ResponseSpecification responseCod200Spec = new ResponseSpecBuilder()
-            .log(ALL)
-            .expectStatusCode(200)
-            .build();
-
-    public static ResponseSpecification responseCod404Spec = new ResponseSpecBuilder()
-            .log(ALL)
-            .expectStatusCode(404)
-            .build();
+    public static ResponseSpecification getResponseSpec(int respCode) {
+        return new ResponseSpecBuilder()
+                .log(ALL)
+                .expectStatusCode(respCode)
+                .build();
+    }
 }

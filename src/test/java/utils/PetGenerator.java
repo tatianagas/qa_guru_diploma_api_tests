@@ -1,9 +1,10 @@
-package services;
+package utils;
 
 import model.PetModel;
 
-public class PetUpdateService {
-    public PetModel createUpdatedPet(PetModel petToUpdate) {
+public class PetGenerator {
+
+    public static PetModel createUpdatedPet(PetModel petToUpdate) {
         return new PetModel(
                 petToUpdate.getId(),
                 petToUpdate.getCategory(),
@@ -13,5 +14,4 @@ public class PetUpdateService {
                 "sold"
         );
     }
-
 }

@@ -26,4 +26,15 @@ public class PetData {
     public static PetModel.Category getCategory() {
         return new PetModel.Category(CATEGORY_ID, CATEGORY_NAME);
     }
+
+    public static PetModel getDefaultPet() {
+        return new PetModel(
+                PET_ID,
+                getCategory(),
+                PET_NAME,
+                getPhotoUrls(),
+                getTags(),
+                PET_STATUS
+        );
+    }
 }
