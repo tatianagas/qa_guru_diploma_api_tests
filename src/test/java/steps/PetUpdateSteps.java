@@ -13,7 +13,7 @@ public class PetUpdateSteps {
         return given(TestSpec.requestSpec)
                 .body(pet)
                 .when()
-                .put("/pet")
+                .put("")
                 .then()
                 .spec(TestSpec.getResponseSpec(200))
                 .extract().as(PetModel.class);

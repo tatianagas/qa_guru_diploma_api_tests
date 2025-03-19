@@ -11,7 +11,7 @@ public class PetDeletionSteps {
     public void deletePetById(long petId) {
         given(TestSpec.requestSpec)
                 .when()
-                .delete("/pet/{petId}", petId)
+                .delete("/{petId}", petId)
                 .then()
                 .spec(TestSpec.getResponseSpec(200)); // Ожидаем код ответа 200
     }

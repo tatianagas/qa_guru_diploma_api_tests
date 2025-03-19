@@ -17,7 +17,7 @@ public class PetSearchSteps {
         return given(TestSpec.requestSpec)
                 .queryParam("status", "available,pending,sold")
                 .when()
-                .get("/pet/findByStatus")
+                .get("/findByStatus")
                 .then()
                 .spec(TestSpec.getResponseSpec(200))
                 .extract().jsonPath().getList("", PetModel.class);
@@ -27,7 +27,7 @@ public class PetSearchSteps {
     public PetModel getPetById(long petId) {
         return given(TestSpec.requestSpec)
                 .when()
-                .get("/pet/{petId}", petId)
+                .get("/{petId}", petId)
                 .then()
                 .spec(TestSpec.getResponseSpec(200))
                 .extract().as(PetModel.class);
@@ -38,7 +38,7 @@ public class PetSearchSteps {
         return given(TestSpec.requestSpec)
                 .queryParam("status", status.name().toLowerCase())
                 .when()
-                .get("/pet/findByStatus")
+                .get("/findByStatus")
                 .then()
                 .spec(TestSpec.getResponseSpec(200))
                 .extract().jsonPath().getList("", PetModel.class);
@@ -48,7 +48,7 @@ public class PetSearchSteps {
     public ErrorResponsePetModel getPetByIdNotFound(long petId) {
         return given(TestSpec.requestSpec)
                 .when()
-                .get("/pet/{petId}", petId)
+                .get("/{petId}", petId)
                 .then()
                 .spec(TestSpec.getResponseSpec(404)) // Ожидаем код ответа 404
                 .extract().as(ErrorResponsePetModel.class);

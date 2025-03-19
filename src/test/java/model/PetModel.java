@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class PetModel {
     private long id;
@@ -16,16 +17,18 @@ public class PetModel {
     private String status;
 
     @Data
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class Category {
-        private int id;
+        private long id;
         private String name;
     }
 
     @Data
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class Tag {
-        private int id;
+        private long id;
         private String name;
     }
 }

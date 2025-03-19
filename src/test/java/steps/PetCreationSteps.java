@@ -13,7 +13,7 @@ public class PetCreationSteps {
         return given(TestSpec.requestSpec)
                 .body(pet)
                 .when()
-                .post("/pet")
+                .post("")
                 .then()
                 .spec(TestSpec.getResponseSpec(200))
                 .extract().as(PetModel.class);
