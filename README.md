@@ -23,6 +23,7 @@
 - [x] Успешный поиск питомца по ID
 - [x] Поиск несуществующего питомца по ID
 - [x] Обновление данных существующего питомца
+- [x] Удаление питомца по ID
 
 Запуск тестов из командной строки:
 
@@ -35,13 +36,13 @@ gradle clean test
 
 ### Пример такого отчета в Telegram:
 
-<img src="/images/telegram.jpg" width="300" height="300">
+<img src="/images/telegram.jpg" width="300" height="270">
 
-### Пример Allure-отчета:
+### Пример [Allure-отчета](https://jenkins.autotests.cloud/job/qa_guru_diploma_api_tests/allure/):
 
 <img src="/images/allure.jpg" width="600">
 
-### Прогон автотестов в Jenkins:
+### Прогон автотестов в [Jenkins](https://jenkins.autotests.cloud/job/qa_guru_diploma_api_tests/):
 
 <img src="/images/jenkins.jpg" width="600">
 
