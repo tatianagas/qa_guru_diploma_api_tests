@@ -3,17 +3,39 @@
 ### Стек технологий
 
 <p align="center">
-<img width="6%" title="IntelliJ IDEA" src="icons/Intelij_IDEA.svg">
-<img width="6%" title="Java" src="icons/Java.svg">
-<img width="6%" title="Selenide" src="icons/Selenide.svg">
-<img width="6%" title="Selenoid" src="icons/Selenoid.svg">
-<img width="6%" title="Allure Report" src="icons/Allure_Report.svg">
-<img width="5%" title="Allure TestOps" src="icons/AllureTestOps.svg">
-<img width="6%" title="Gradle" src="icons/Gradle.svg">
-<img width="6%" title="JUnit5" src="icons/JUnit5.svg">
-<img width="6%" title="GitHub" src="icons/GitHub.svg">
-<img width="6%" title="Jenkins" src="icons/Jenkins.svg">
-<img width="6%" title="Telegram" src="icons/Telegram.svg">
+    <a href="https://www.jetbrains.com/idea" title="IntelliJ IDEA">
+        <img width="6%" src="icons/Intelij_IDEA.svg">
+    </a>
+    <a href="https://www.java.com" title="Java">
+        <img width="6%" src="icons/Java.svg">
+    </a>
+    <a href="https://selenide.org" title="Selenide">
+        <img width="6%" src="icons/Selenide.svg">
+    </a>
+    <a href="https://aerokube.com/selenoid" title="Selenoid">
+        <img width="6%" src="icons/Selenoid.svg">
+    </a>
+    <a href="https://docs.qameta.io/allure" title="Allure Report">
+        <img width="6%" src="icons/Allure_Report.svg">
+    </a>
+    <a href="https://qameta.io/" title="Allure TestOps">
+        <img width="5%" src="icons/AllureTestOps.svg">
+    </a>
+    <a href="https://gradle.org" title="Gradle">
+        <img width="6%" src="icons/Gradle.svg">
+    </a>
+    <a href="https://junit.org/junit5" title="JUnit5">
+        <img width="6%" src="icons/Junit5.svg">
+    </a>
+    <a href="https://github.com" title="GitHub">
+        <img width="6%" src="icons/GitHub.svg">
+    </a>
+    <a href="https://www.jenkins.io" title="Jenkins">
+        <img width="6%" src="icons/Jenkins.svg">
+    </a>
+    <a href="https://telegram.org" title="Telegram">
+        <img width="6%" src="icons/Telegram.svg">
+    </a>
 </p>
 
 Вот несколько примеров простых тестов для сайта завода:
