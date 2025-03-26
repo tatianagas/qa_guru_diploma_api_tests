@@ -1,18 +1,18 @@
 package steps;
 
-import io.qameta.allure.Step;
 import specs.TestSpec;
 
+import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 
 public class PetDeletionSteps {
-
-    @Step("Удаляем питомца по ID {petId}")
     public void deletePetById(long petId) {
-        given(TestSpec.requestSpec)
-                .when()
-                .delete("/{petId}", petId)
-                .then()
-                .spec(TestSpec.getResponseSpec(200)); // Ожидаем код ответа 200
+        step("Удаляем питомца по ID " + petId, () ->
+                given(TestSpec.requestSpec)
+                        .when()
+                        .delete("/{petId}", petId)
+                        .then()
+                        .spec(TestSpec.getResponseSpec(200))
+        );
     }
 }

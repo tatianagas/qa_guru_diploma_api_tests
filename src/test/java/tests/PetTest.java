@@ -1,6 +1,7 @@
 package tests;
 
 import data.PetData;
+import io.qameta.allure.*;
 import model.ErrorResponsePetModel;
 import model.PetModel;
 import model.PetStatus;
@@ -13,6 +14,9 @@ import utils.PetGenerator;
 
 import java.util.List;
 
+@Epic("Pet Store API")
+@Feature("Управление питомцами")
+@Story("Базовые операции над питомцами")
 public class PetTest extends TestBase {
 
     private final PetCreationSteps petCreationSteps = new PetCreationSteps();
@@ -21,8 +25,11 @@ public class PetTest extends TestBase {
     private final PetVerificationSteps petVerificationSteps = new PetVerificationSteps();
     private final PetDeletionSteps petDeletionSteps = new PetDeletionSteps();
 
+
     @Test
     @DisplayName("Создание нового питомца")
+    @Severity(SeverityLevel.BLOCKER)
+
     void createPetTest() {
         PetModel pet = PetData.getDefaultPet();
 
@@ -41,6 +48,8 @@ public class PetTest extends TestBase {
     @ParameterizedTest
     @EnumSource(PetStatus.class)
     @DisplayName("Поиск питомцев по статусу {status}")
+    @Severity(SeverityLevel.CRITICAL)
+
     void findPetsByStatusTest(PetStatus status) {
         List<PetModel> pets = petSearchSteps.findPetsByStatus(status);
         petVerificationSteps.verifyPetsListIsNotEmpty(pets);
@@ -48,6 +57,8 @@ public class PetTest extends TestBase {
 
     @Test
     @DisplayName("Успешный поиск питомца по ID")
+    @Severity(SeverityLevel.NORMAL)
+
     void findPetByIdSuccessTest() {
         List<PetModel> pets = petSearchSteps.getAllPets();
         petVerificationSteps.verifyPetsListIsNotEmpty(pets);
@@ -61,6 +72,8 @@ public class PetTest extends TestBase {
 
     @Test
     @DisplayName("Поиск несуществующего питомца по ID")
+    @Severity(SeverityLevel.NORMAL)
+
     void findPetByIdNotFoundTest() {
         long nonExistentPetId = Long.MAX_VALUE;
         String expectedErrorMessage = "Pet not found";
@@ -71,6 +84,8 @@ public class PetTest extends TestBase {
 
     @Test
     @DisplayName("Обновление данных существующего питомца")
+    @Severity(SeverityLevel.CRITICAL)
+
     void updatePetTest() {
         List<PetModel> pets = petSearchSteps.getAllPets();
         petVerificationSteps.verifyPetsListIsNotEmpty(pets);
@@ -89,6 +104,8 @@ public class PetTest extends TestBase {
 
     @Test
     @DisplayName("Удаление питомца по ID")
+    @Severity(SeverityLevel.CRITICAL)
+
     void deletePetByIdTest() {
         PetModel pet = PetData.getDefaultPet();
         PetModel createdPet = petCreationSteps.createPet(pet);
