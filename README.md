@@ -9,17 +9,11 @@
     <a href="https://www.java.com" title="Java">
         <img width="6%" src="icons/Java.svg">
     </a>
-    <a href="https://selenide.org" title="Selenide">
-        <img width="6%" src="icons/Selenide.svg">
-    </a>
-    <a href="https://aerokube.com/selenoid" title="Selenoid">
-        <img width="6%" src="icons/Selenoid.svg">
+    <a href="https://rest-assured.io/" title="Selenide">
+        <img width="6%" src="icons/Rest-Assured.png">
     </a>
     <a href="https://docs.qameta.io/allure" title="Allure Report">
         <img width="6%" src="icons/Allure_Report.svg">
-    </a>
-    <a href="https://qameta.io/" title="Allure TestOps">
-        <img width="5%" src="icons/AllureTestOps.svg">
     </a>
     <a href="https://gradle.org" title="Gradle">
         <img width="6%" src="icons/Gradle.svg">
