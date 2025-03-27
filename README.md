@@ -19,7 +19,7 @@
         <img width="6%" src="icons/Gradle.svg">
     </a>
     <a href="https://junit.org/junit5" title="JUnit5">
-        <img width="6%" src="icons/Junit5.svg">
+        <img width="6%" src="icons/JUnit5.svg">
     </a>
     <a href="https://github.com" title="GitHub">
         <img width="6%" src="icons/GitHub.svg">
